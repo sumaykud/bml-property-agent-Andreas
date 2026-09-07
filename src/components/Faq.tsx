@@ -17,7 +17,7 @@ const ITEMS = [
   },
   {
     q: 'Bagaimana cara menghubungi agen?',
-    a: `Cara tercepat lewat WhatsApp ke ${site.agent.name} — biasanya dibalas di bawah satu jam pada jam kerja. Anda juga bisa mengirim hasil simulasi KPR langsung dari halaman detail properti, sehingga kami sudah tahu unit dan skema cicilan yang Anda maksud.`,
+    a: `Cara tercepat lewat WhatsApp ke ${site.agent.name} — biasanya dibalas di bawah satu jam pada jam kerja. Anda juga bisa mengirim hasil simulasi RPC langsung dari halaman detail properti, sehingga kami sudah tahu unit dan kemampuan cicilan yang Anda maksud.`,
   },
   {
     q: 'Bisa beli dari luar kota?',
