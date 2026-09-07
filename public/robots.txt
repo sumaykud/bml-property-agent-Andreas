@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bml-property-agent-andreas.vercel.app/sitemap.xml
