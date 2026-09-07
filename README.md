@@ -56,13 +56,17 @@ Semua konten yang perlu diubah terkumpul di dua file — tidak perlu menyentuh k
 ```ts
 agent: {
   name: 'Andreas',
-  whatsapp: '6281234567890', // ← ganti dengan nomor asli, format internasional tanpa "+"
+  whatsapp: '628134759648', // +62 813-4759-648 — internasional, tanpa "+"
   email: 'andreas@bmlproperty.co.id',
 }
 ```
 
-> ⚠️ Nomor WhatsApp saat ini masih **placeholder**. Semua tombol CTA mengarah ke
-> `wa.me/<nomor>`, jadi ganti nilai ini sebelum situs dipakai.
+Nomor WhatsApp sudah berisi nomor asli Andreas dan dipakai oleh **seluruh tombol CTA**
+(Konsultasi, Ajukan KPR, Kirim simulasi ke WA, Hubungi agen, Jadwalkan survei, dan
+tautan di footer). Cukup ubah satu baris ini bila nomornya berganti.
+
+> ⚠️ Alamat email masih **placeholder** — belum dipakai di antarmuka mana pun, tapi
+> ganti bila nanti ditampilkan.
 
 **`src/data/properties.ts`** — daftar listing. Tambah/ubah objek pada array `properties`;
 `slug` menjadi URL halaman detail. Bisa diganti sumbernya ke CMS/API tanpa mengubah komponen.
