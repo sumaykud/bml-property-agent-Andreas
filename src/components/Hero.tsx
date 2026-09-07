@@ -11,13 +11,14 @@ export default function Hero() {
           </Reveal>
 
           <Reveal as="h1" delay={70}>
-            {site.agent.name}, siap bantu Anda <em>agen properti terpercaya</em>
+            {site.agent.name}, siap bantu Anda <em>Temukan Properti Impian Anda Bersama Agen BML Terpercaya</em>
           </Reveal>
 
           <Reveal as="p" className="hero__lead" delay={140}>
-            Listing rumah dan apartemen di Manado yang sudah dicek legalitas dan
-            kondisi fisiknya. Anda dapat simulasi KPR, jadwal survei, dan
-            pendampingan sampai akad — tanpa biaya tambahan dari sisi pembeli.
+            Temukan pilihan rumah BML di Manado yang 
+            terjamin legalitas dan kondisi fisiknya. 
+            Dapatkan layanan penuh mulai dari bantuan simulasi KPR, 
+            penjadwalan survei, hingga pendampingan proses akad - 100% tanpa biaya tambahan dari sisi pembeli.
           </Reveal>
 
           <Reveal className="hero__actions" delay={200}>
@@ -38,10 +39,9 @@ export default function Hero() {
 
           <Reveal className="proof" delay={250}>
             <div className="avatars" aria-hidden="true">
-              <span>RW</span>
-              <span>JT</span>
-              <span>MS</span>
-              <span>AL</span>
+              <img src="/images/us 1.png" alt="User 1" />
+              <img src="/images/us 2.png" alt="User 2" />
+              <img src="/images/us 3.png" alt="User 3" />
             </div>
             <p className="proof__text">
               <span className="stars" aria-hidden="true">
