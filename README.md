@@ -23,6 +23,7 @@ npm run dev
 | `npm run build`     | Type-check + build produksi ke `dist/`        |
 | `npm run preview`   | Menjalankan hasil build produksi secara lokal |
 | `npm run typecheck` | Hanya pemeriksaan TypeScript                  |
+| `npm run placeholders` | Membuat ulang foto placeholder (butuh ffmpeg) |
 
 ---
 
@@ -68,33 +69,61 @@ agent: {
 
 ### Mengganti foto
 
-Foto properti dan foto agen saat ini memakai placeholder SVG inline
-(`src/components/PhotoPlaceholder.tsx` dan siluet di `src/components/Hero.tsx`) —
-nol permintaan jaringan dan nol *layout shift*.
+Foto dibaca dari `public/images/properties/<slug>/01.jpg`, `02.jpg`, dan seterusnya.
+**Mengganti foto cukup dengan menimpa berkasnya** — tidak ada kode yang perlu disentuh.
 
-Untuk memakai foto asli, ganti komponen placeholder dengan `<img>`:
+| | |
+| --- | --- |
+| Dimensi | **1600 × 1200 px** (4:3, mendatar) |
+| Format | JPG |
+| Ukuran berkas | usahakan < 300 kB per foto |
 
-```tsx
-<img src={property.photo} alt={property.title} loading="lazy" decoding="async" />
+Panduan lengkap ada di **[`public/images/README.md`](public/images/README.md)** —
+termasuk daftar slug, cara pemotongan gambar di tiap tempat, dan cara menambah foto.
+
+Berkas placeholder yang ada sekarang sudah berukuran persis 1600 × 1200 dan menuliskan
+ukurannya di tengah gambar, jadi bisa langsung dipakai sebagai acuan. Bila sebuah berkas
+belum ada, aplikasi otomatis menampilkan gambar pengganti SVG — tidak ada ikon gambar
+rusak dan tata letak tetap utuh.
+
+Membuat ulang placeholder setelah menambah properti baru (butuh `ffmpeg`):
+
+```bash
+npm run placeholders
 ```
 
-Rasio gambar sudah dikunci lewat CSS (`aspect-ratio` pada `.card__media` dan `.gallery`),
-jadi tata letak tidak akan bergeser saat gambar dimuat.
+> ⚠️ Perintah di atas **menimpa** seluruh isi `public/images/properties/`,
+> termasuk foto asli yang sudah dipasang.
+
+Foto agen di hero masih berupa siluet SVG di `src/components/Hero.tsx` — ganti bagian
+`<svg>` itu dengan `<img>` bila fotonya sudah ada.
+
+### Galeri & penampil foto
+
+Keempat kotak foto di halaman detail bisa diklik dan membuka penampil layar penuh:
+
+- geser maju/mundur lewat tombol panah atau tombol **←** / **→** di papan ketik
+- kotak terakhir memuat label **"+N foto"** dan membuka seluruh koleksi
+- tutup lewat tombol **✕**, tombol **Esc**, atau klik area gelap di luar foto
+- gulir halaman latar dikunci selama penampil terbuka, dan fokus papan ketik
+  dikembalikan ke kotak foto yang tadi diklik saat penampil ditutup
 
 ---
 
 ## Catatan performa
 
-Total muatan seluruh situs **± 94 kB (gzip)** — sudah termasuk React, router, CSS, dan logo.
+Kode situs (HTML + CSS + JavaScript) berbobot **± 96 kB gzip**, sudah termasuk React,
+router, dan logo. **Foto berada di luar angka itu** dan kini menjadi bagian terberat
+halaman — lihat catatan di bawah.
 
 Yang dilakukan untuk menjaga kecepatan:
 
 - **Tanpa font eksternal.** Memakai *system font stack*, sehingga tidak ada permintaan
   ke Google Fonts dan tidak ada FOUT/FOIT.
-- **Tanpa framework CSS.** Satu file CSS (± 4,3 kB gzip); tidak ada kelas tak terpakai.
-- **Tanpa pustaka chart.** Grafik pokok vs bunga digambar dengan CSS biasa.
-- **Gambar nol byte jaringan.** Placeholder berupa SVG inline; satu-satunya file gambar
-  adalah logo (7 kB, sudah dikuantisasi ke palet dari 62 kB).
+- **Tanpa framework CSS.** Satu file CSS (± 4,7 kB gzip); tidak ada kelas tak terpakai.
+- **Tanpa pustaka chart maupun pustaka galeri.** Grafik pokok vs bunga dan penampil foto
+  layar penuh ditulis sendiri — nol dependensi tambahan.
+- **Logo 7 kB**, dikuantisasi ke palet dari 62 kB.
 - **Semua rute dalam satu bundel.** Halaman detail hanya ± 2,3 kB gzip — memuatnya malas
   justru menambah satu perjalanan jaringan pada tautan properti yang paling sering dibagikan.
 - **React dan router dipisah ke chunk sendiri** agar bisa di-*cache* panjang dan tidak
@@ -102,6 +131,23 @@ Yang dilakukan untuk menjaga kecepatan:
 - **Animasi seminimal mungkin.** Hanya teks yang beranimasi (*fade* + naik 10 px sekali
   saat masuk viewport) memakai `IntersectionObserver` yang langsung dilepas setelah terpicu.
   Otomatis nonaktif bila pengguna memilih `prefers-reduced-motion`.
+
+### Soal bobot foto
+
+Sejak foto asli dipakai, gambar menjadi penyumbang bobot terbesar — sifat bawaan situs
+properti. Yang sudah dilakukan:
+
+- semua foto `loading="lazy"` kecuali foto utama halaman detail, yang dimuat lebih awal
+  karena berada di paruh atas halaman;
+- `width`/`height` dan `aspect-ratio` dipasang, jadi tidak ada pergeseran tata letak
+  (*layout shift*) saat gambar masuk;
+- foto di penampil layar penuh baru diminta saat penampil dibuka, dan foto tetangga
+  disiapkan diam-diam agar perpindahan terasa instan;
+- `sizes` diisi supaya browser tidak mengambil gambar lebih besar dari yang dibutuhkan.
+
+**Yang masih bergantung pada Anda:** kompres foto sebelum menaruhnya di folder. Target
+di bawah 300 kB per foto. Foto langsung dari kamera bisa 5–10 MB dan akan membuat
+halaman terasa lambat meskipun kodenya ringan.
 
 ---
 
@@ -137,13 +183,16 @@ Ganti URL `https://bml-property-agent-andreas.vercel.app` dengan domain final di
 
 ```
 public/            logo, favicon, robots.txt, sitemap.xml
+  images/          foto properti — lihat public/images/README.md
 brand/             logo sumber resolusi penuh (tidak ikut di-build)
+scripts/           generate-placeholders.mjs (pembuat foto placeholder)
 src/
-  components/      Header, Hero, Listings, PropertyCard, Faq, Footer,
-                   MortgageCalculator, PhotoPlaceholder, Reveal
+  components/      Header, Hero, Listings, PropertyCard, PropertyImage, Faq,
+                   Footer, MortgageCalculator, Lightbox, PhotoPlaceholder, Reveal
   pages/           Home, PropertyDetail, NotFound
   data/            properties.ts   ← sumber data listing
-  lib/             site.ts (kontak), format.ts (Rupiah + anuitas KPR)
+  lib/             site.ts (kontak), format.ts (Rupiah + anuitas KPR),
+                   photos.ts (path & ukuran foto)
   styles.css       seluruh gaya situs
 ```
 

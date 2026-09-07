@@ -1,16 +1,19 @@
 import { Link } from 'react-router-dom'
 import type { Property } from '../data/properties'
 import { formatIDR } from '../lib/format'
-import PhotoPlaceholder from './PhotoPlaceholder'
+import PropertyImage from './PropertyImage'
 
 export default function PropertyCard({ property }: { property: Property }) {
-  const { slug, title, area, type, price, buildingArea, bedrooms, bathrooms, tone } =
-    property
+  const { slug, title, area, type, price, buildingArea, bedrooms, bathrooms } = property
 
   return (
     <Link to={`/properti/${slug}`} className="card">
       <div className="card__media">
-        <PhotoPlaceholder tone={tone} type={type} />
+        <PropertyImage
+          property={property}
+          index={0}
+          sizes="(max-width: 760px) 100vw, (max-width: 1000px) 50vw, 350px"
+        />
         <span className="card__tag">{type}</span>
       </div>
 

@@ -66,10 +66,15 @@ export default function Hero() {
                 <stop offset="1" stopColor="#0b5cff" stopOpacity="0.14" />
               </linearGradient>
             </defs>
-            {/* Siluet kepala & bahu: pengganti sementara foto agen */}
+            {/*
+              Siluet kepala & bahu sebagai pengganti sementara foto agen.
+              Kepala berakhir di y=160 dan bahu mulai di y=176: jarak 16 unit
+              supaya terbaca sebagai satu sosok, bukan dua bentuk terpisah.
+              Bahu berhenti di y=280, jadi tidak tertimpa kartu nama di bawah.
+            */}
             <g fill="url(#agentSilhouette)">
-              <circle cx="160" cy="150" r="60" />
-              <path d="M40 400c0-62 54-112 120-112s120 50 120 112z" />
+              <circle cx="160" cy="112" r="48" />
+              <path d="M160 176c-54 0-98 44-98 98v6h196v-6c0-54-44-98-98-98z" />
             </g>
           </svg>
           <div className="hero__badge">

@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
+import Lightbox from '../components/Lightbox'
 import MortgageCalculator from '../components/MortgageCalculator'
-import PhotoPlaceholder from '../components/PhotoPlaceholder'
 import PropertyCard from '../components/PropertyCard'
+import PropertyImage from '../components/PropertyImage'
 import Reveal from '../components/Reveal'
 import { propertyBySlug, similarTo } from '../data/properties'
 import { formatIDR } from '../lib/format'
@@ -12,9 +13,15 @@ export default function PropertyDetail() {
   const { slug } = useParams()
   const property = propertyBySlug(slug)
 
+  /** Indeks foto yang sedang dibuka di penampil layar penuh; null = tertutup. */
+  const [viewerAt, setViewerAt] = useState<number | null>(null)
+
   useEffect(() => {
     if (property) document.title = `${property.title} — ${site.brand}`
   }, [property])
+
+  // Tutup penampil bila pengguna berpindah ke unit lain.
+  useEffect(() => setViewerAt(null), [slug])
 
   if (!property) return <Navigate to="/404" replace />
 
@@ -39,19 +46,40 @@ export default function PropertyDetail() {
         </nav>
 
         <div className="gallery">
-          <div className="gallery__main">
-            <PhotoPlaceholder tone={property.tone} type={property.type} />
-          </div>
-          <div className="gallery__side">
-            <PhotoPlaceholder tone={property.tone + 1} type={property.type} />
-          </div>
-          <div className="gallery__side">
-            <PhotoPlaceholder tone={property.tone + 2} type={property.type} />
-          </div>
-          <div className="gallery__side">
-            <PhotoPlaceholder tone={property.tone + 3} type={property.type} />
-            <div className="gallery__more">+{property.photoCount - 3} foto</div>
-          </div>
+          {[0, 1, 2, 3].map((slot) => {
+            const isMain = slot === 0
+            const isLast = slot === 3
+            const hidden = property.photoCount - 4
+
+            return (
+              <button
+                key={slot}
+                type="button"
+                className={isMain ? 'gallery__main' : 'gallery__side'}
+                onClick={() => setViewerAt(slot)}
+                aria-label={
+                  isLast && hidden > 0
+                    ? `Lihat semua ${property.photoCount} foto`
+                    : `Buka foto ${slot + 1} ukuran penuh`
+                }
+              >
+                {/* Keempat slot ada di paruh atas halaman, jadi tidak ada
+                    yang di-lazy; hanya foto utama yang berprioritas tinggi. */}
+                <PropertyImage
+                  property={property}
+                  index={slot}
+                  priority={isMain}
+                  eager={!isMain}
+                  sizes={isMain ? '(max-width: 760px) 100vw, 540px' : '270px'}
+                />
+                {isLast && hidden > 0 && (
+                  <span className="gallery__more" aria-hidden="true">
+                    +{hidden} foto
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
 
         <div className="detail">
@@ -162,6 +190,14 @@ export default function PropertyDetail() {
           </div>
         </div>
       </section>
+
+      {viewerAt !== null && (
+        <Lightbox
+          property={property}
+          startIndex={viewerAt}
+          onClose={() => setViewerAt(null)}
+        />
+      )}
     </>
   )
 }

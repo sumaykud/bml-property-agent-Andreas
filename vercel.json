@@ -20,6 +20,16 @@
       ]
     },
     {
+      "comment": "Foto properti dinamai tetap (01.jpg, ...) dan diganti dengan cara ditimpa, jadi cache-nya pendek dengan revalidasi agar foto baru cepat terlihat.",
+      "source": "/images/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, stale-while-revalidate=604800"
+        }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
