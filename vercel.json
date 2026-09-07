@@ -20,7 +20,6 @@
       ]
     },
     {
-      "comment": "Foto properti dinamai tetap (01.jpg, ...) dan diganti dengan cara ditimpa, jadi cache-nya pendek dengan revalidasi agar foto baru cepat terlihat.",
       "source": "/images/(.*)",
       "headers": [
         {
