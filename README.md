@@ -95,8 +95,10 @@ npm run placeholders
 > ⚠️ Perintah di atas **menimpa** seluruh isi `public/images/properties/`,
 > termasuk foto asli yang sudah dipasang.
 
-Foto agen di hero masih berupa siluet SVG di `src/components/Hero.tsx` — ganti bagian
-`<svg>` itu dengan `<img>` bila fotonya sudah ada.
+**Foto agen** ada di `public/images/agent/andreas.jpg` (716 × 698, nyaris persegi).
+Timpa berkas itu untuk menggantinya. Rasionya sengaja dibiarkan hampir persegi:
+bingkainya tegak 4:5 di desktop tapi mendatar 5:4 di layar sempit, jadi foto yang
+sudah dipotong ke salah satu rasio akan rusak di rasio yang lain.
 
 ### Galeri & penampil foto
 
@@ -183,7 +185,7 @@ Ganti URL `https://bml-property-agent-andreas.vercel.app` dengan domain final di
 
 ```
 public/            logo, favicon, robots.txt, sitemap.xml
-  images/          foto properti — lihat public/images/README.md
+  images/          foto properti & foto agen — lihat public/images/README.md
 brand/             logo sumber resolusi penuh (tidak ikut di-build)
 scripts/           generate-placeholders.mjs (pembuat foto placeholder)
 src/

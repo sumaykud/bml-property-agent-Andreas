@@ -101,6 +101,33 @@ yang sudah ada di folder ini**, termasuk foto asli yang sudah dipasang.
 
 ---
 
+---
+
+## Foto agen
+
+```
+public/images/agent/andreas.jpg
+```
+
+Dipakai di bagian hero halaman depan. Timpa berkasnya untuk mengganti.
+
+| | |
+| --- | --- |
+| **Dimensi sekarang** | 716 × 698 (nyaris persegi) |
+| **Rasio yang disarankan** | **mendekati 1:1** — jangan dipotong tegak atau mendatar |
+| **Ukuran berkas** | usahakan di bawah 150 kB |
+
+**Kenapa harus mendekati persegi:** bingkainya berubah bentuk mengikuti layar —
+**tegak 4:5 di desktop**, tapi **mendatar 5:4 di ponsel**. Foto yang sudah dipotong
+ke salah satu rasio akan terpotong berlebihan di rasio satunya. Foto persegi aman
+di keduanya.
+
+Posisi pemotongan diatur `object-position: center 22%` di `src/styles.css`
+(dijaga ke arah atas karena wajah ada di paruh atas foto). Sesuaikan angka itu
+bila komposisi foto penggantinya berbeda.
+
+---
+
 ## Berkas lain di sini
 
 | Berkas | Keterangan |

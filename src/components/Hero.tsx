@@ -53,30 +53,21 @@ export default function Hero() {
         </div>
 
         <Reveal className="hero__portrait" delay={120}>
-          <svg
-            viewBox="0 0 320 400"
-            role="img"
-            aria-label={`Foto ${site.agent.name}, ${site.agent.role}`}
-            style={{ width: '100%', height: '100%' }}
-            preserveAspectRatio="xMidYMid slice"
-          >
-            <defs>
-              <linearGradient id="agentSilhouette" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#0b5cff" stopOpacity="0.30" />
-                <stop offset="1" stopColor="#0b5cff" stopOpacity="0.14" />
-              </linearGradient>
-            </defs>
-            {/*
-              Siluet kepala & bahu sebagai pengganti sementara foto agen.
-              Kepala berakhir di y=160 dan bahu mulai di y=176: jarak 16 unit
-              supaya terbaca sebagai satu sosok, bukan dua bentuk terpisah.
-              Bahu berhenti di y=280, jadi tidak tertimpa kartu nama di bawah.
-            */}
-            <g fill="url(#agentSilhouette)">
-              <circle cx="160" cy="112" r="48" />
-              <path d="M160 176c-54 0-98 44-98 98v6h196v-6c0-54-44-98-98-98z" />
-            </g>
-          </svg>
+          {/*
+            Foto dibiarkan pada rasio aslinya (nyaris persegi) dan dipotong oleh
+            CSS: bingkainya tegak 4:5 di desktop tapi mendatar 5:4 di layar
+            sempit, jadi memotong berkasnya lebih dulu ke salah satu rasio
+            justru merusak tampilan di rasio yang lain.
+          */}
+          <img
+            className="hero__photo"
+            src="/images/agent/andreas.jpg"
+            alt={`${site.agent.name}, ${site.agent.role}`}
+            width={716}
+            height={698}
+            fetchPriority="high"
+            decoding="async"
+          />
           <div className="hero__badge">
             <strong>{site.agent.name}</strong>
             <span>{site.agent.role} · Manado</span>
