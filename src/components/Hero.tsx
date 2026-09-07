@@ -16,7 +16,7 @@ export default function Hero() {
 
           <Reveal as="p" className="hero__lead" delay={140}>
             Listing rumah dan apartemen di Manado yang sudah dicek legalitas dan
-            kondisi fisiknya. Anda dapat simulasi RPC, jadwal survei, dan
+            kondisi fisiknya. Anda dapat simulasi KPR, jadwal survei, dan
             pendampingan sampai akad — tanpa biaya tambahan dari sisi pembeli.
           </Reveal>
 

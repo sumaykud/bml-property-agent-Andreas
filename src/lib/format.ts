@@ -23,40 +23,41 @@ export function formatCompactIDR(value: number): string {
   return `Rp ${decimal.format(value)}`
 }
 
-export interface RpcResult {
-  /** Langkah 1 — THP x persentase RPC bank */
-  capacity: number
-  /** Langkah 2 — kapasitas dikurangi cicilan berjalan, tidak pernah negatif */
-  maxInstallment: number
-  /** Porsi kapasitas yang sudah terpakai cicilan berjalan (0-1) */
-  usedShare: number
-  /** Cicilan berjalan sudah menghabiskan seluruh kapasitas */
-  overCommitted: boolean
+export interface MortgageResult {
+  loan: number
+  monthly: number
+  totalPaid: number
+  totalInterest: number
+  interestShare: number
 }
 
 /**
- * RPC (Repayment Capacity) — batas cicilan yang umumnya disetujui bank:
- *
- *   1. Kapasitas maksimal  = THP x persentase RPC
- *   2. Batas cicilan KPR   = kapasitas maksimal - cicilan berjalan
- *
- * Contoh: THP Rp 10.000.000, RPC 50%, cicilan berjalan Rp 1.000.000
- *   -> kapasitas Rp 5.000.000, batas cicilan KPR Rp 4.000.000 per bulan.
+ * Anuitas standar: M = P * i / (1 - (1 + i)^-n), dengan i bunga bulanan
+ * dan n jumlah bulan. Bunga 0% ditangani terpisah agar tidak dibagi nol.
  */
-export function calculateRpc(
-  monthlyIncome: number,
-  rpcPercent: number,
-  existingInstallment: number,
-): RpcResult {
-  const income = Math.max(0, monthlyIncome)
-  const existing = Math.max(0, existingInstallment)
-  const capacity = Math.round(income * (rpcPercent / 100))
-  const maxInstallment = Math.max(0, capacity - existing)
+export function calculateMortgage(
+  price: number,
+  downPaymentPercent: number,
+  years: number,
+  annualRatePercent: number,
+): MortgageResult {
+  const loan = Math.max(0, Math.round(price * (1 - downPaymentPercent / 100)))
+  const months = Math.max(1, Math.round(years * 12))
+  const monthlyRate = annualRatePercent / 100 / 12
+
+  const monthly =
+    monthlyRate === 0
+      ? loan / months
+      : (loan * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months))
+
+  const totalPaid = monthly * months
+  const totalInterest = Math.max(0, totalPaid - loan)
 
   return {
-    capacity,
-    maxInstallment,
-    usedShare: capacity > 0 ? Math.min(1, existing / capacity) : 0,
-    overCommitted: capacity > 0 && existing >= capacity,
+    loan,
+    monthly,
+    totalPaid,
+    totalInterest,
+    interestShare: totalPaid > 0 ? totalInterest / totalPaid : 0,
   }
 }

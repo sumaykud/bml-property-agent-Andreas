@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import RpcCalculator from '../components/RpcCalculator'
+import MortgageCalculator from '../components/MortgageCalculator'
 import PhotoPlaceholder from '../components/PhotoPlaceholder'
 import PropertyCard from '../components/PropertyCard'
 import Reveal from '../components/Reveal'
@@ -106,7 +106,7 @@ export default function PropertyDetail() {
           </div>
 
           <aside className="aside">
-            <RpcCalculator property={property} />
+            <MortgageCalculator property={property} />
 
             <div className="panel">
               <div className="agent">

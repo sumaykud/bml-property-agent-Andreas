@@ -5,8 +5,8 @@ export const site = {
   agent: {
     name: 'Andreas',
     role: 'Agen BML Property',
-    /** +62 813-4759-648 — format internasional tanpa tanda plus, untuk wa.me */
-    whatsapp: '628134759648',
+    /** Format internasional tanpa tanda plus — dipakai untuk tautan wa.me */
+    whatsapp: '6281234567890',
     email: 'andreas@bmlproperty.co.id',
   },
   clientsServed: '50+',

@@ -1,7 +1,7 @@
 # BML Property — Landing Page Agen Andreas
 
 Landing page satu halaman untuk **Andreas**, agen properti **PT Bangun Minanga Lestari (BML)**,
-lengkap dengan halaman detail per properti dan simulasi RPC.
+lengkap dengan halaman detail per properti dan simulasi KPR.
 
 Dibangun dengan **React 19 + Vite + TypeScript**, tema terang & bersih, siap deploy ke Vercel.
 
@@ -42,7 +42,7 @@ Menu header adalah **anchor ke section** (`/#properti`, `/#faq`) dan tetap beker
 dari halaman detail — navigasi berpindah ke beranda lalu menggulir ke bagian yang dituju.
 
 Kartu properti mengarah ke halaman detail `/properti/:slug` yang berisi galeri,
-spesifikasi, deskripsi, lokasi, **simulasi RPC sticky**, kartu agen, dan properti serupa.
+spesifikasi, deskripsi, lokasi, **simulasi KPR sticky**, kartu agen, dan properti serupa.
 
 ---
 
@@ -55,17 +55,13 @@ Semua konten yang perlu diubah terkumpul di dua file — tidak perlu menyentuh k
 ```ts
 agent: {
   name: 'Andreas',
-  whatsapp: '628134759648', // +62 813-4759-648 — internasional, tanpa "+"
+  whatsapp: '6281234567890', // ← ganti dengan nomor asli, format internasional tanpa "+"
   email: 'andreas@bmlproperty.co.id',
 }
 ```
 
-Nomor WhatsApp sudah berisi nomor asli Andreas dan dipakai oleh **seluruh tombol CTA**
-(Konsultasi, Ajukan KPR, Kirim simulasi ke WA, Hubungi agen, Jadwalkan survei, dan
-tautan di footer). Cukup ubah satu baris ini bila nomornya berganti.
-
-> ⚠️ Alamat email masih **placeholder** — belum dipakai di antarmuka mana pun, tapi
-> ganti bila nanti ditampilkan.
+> ⚠️ Nomor WhatsApp saat ini masih **placeholder**. Semua tombol CTA mengarah ke
+> `wa.me/<nomor>`, jadi ganti nilai ini sebelum situs dipakai.
 
 **`src/data/properties.ts`** — daftar listing. Tambah/ubah objek pada array `properties`;
 `slug` menjadi URL halaman detail. Bisa diganti sumbernya ke CMS/API tanpa mengubah komponen.
@@ -96,7 +92,7 @@ Yang dilakukan untuk menjaga kecepatan:
 - **Tanpa font eksternal.** Memakai *system font stack*, sehingga tidak ada permintaan
   ke Google Fonts dan tidak ada FOUT/FOIT.
 - **Tanpa framework CSS.** Satu file CSS (± 4,3 kB gzip); tidak ada kelas tak terpakai.
-- **Tanpa pustaka chart.** Bar komposisi kapasitas RPC digambar dengan CSS biasa.
+- **Tanpa pustaka chart.** Grafik pokok vs bunga digambar dengan CSS biasa.
 - **Gambar nol byte jaringan.** Placeholder berupa SVG inline; satu-satunya file gambar
   adalah logo (7 kB, sudah dikuantisasi ke palet dari 62 kB).
 - **Semua rute dalam satu bundel.** Halaman detail hanya ± 2,3 kB gzip — memuatnya malas
@@ -144,41 +140,22 @@ public/            logo, favicon, robots.txt, sitemap.xml
 brand/             logo sumber resolusi penuh (tidak ikut di-build)
 src/
   components/      Header, Hero, Listings, PropertyCard, Faq, Footer,
-                   RpcCalculator, PhotoPlaceholder, Reveal
+                   MortgageCalculator, PhotoPlaceholder, Reveal
   pages/           Home, PropertyDetail, NotFound
   data/            properties.ts   ← sumber data listing
-  lib/             site.ts (kontak), format.ts (Rupiah + hitungan RPC)
+  lib/             site.ts (kontak), format.ts (Rupiah + anuitas KPR)
   styles.css       seluruh gaya situs
 ```
 
-## Catatan simulasi RPC
+## Catatan simulasi KPR
 
-Panel di halaman detail menghitung **RPC (Repayment Capacity)** — batas cicilan yang
-umumnya disetujui bank berdasarkan penghasilan calon pembeli, bukan berdasarkan harga
-properti.
+Perhitungan memakai skema **anuitas** standar:
 
 ```
-1. Kapasitas maksimal = THP × persentase RPC
-2. Batas cicilan KPR  = kapasitas maksimal − cicilan berjalan
+M = P · i / (1 − (1 + i)⁻ⁿ)
 ```
 
-Contoh (nilai awal yang tampil di panel):
-
-| Masukan                   | Nilai           |
-| ------------------------- | --------------- |
-| Gaji bersih (THP)         | Rp 10.000.000   |
-| Persentase RPC bank       | 50%             |
-| Cicilan berjalan          | Rp 1.000.000    |
-
-```
-1. Rp 10.000.000 × 50%          = Rp 5.000.000
-2. Rp 5.000.000 − Rp 1.000.000  = Rp 4.000.000 / bulan
-```
-
-Implementasinya di `calculateRpc()` pada [src/lib/format.ts](src/lib/format.ts).
-Hasil tidak pernah negatif: bila cicilan berjalan sudah menghabiskan kapasitas,
-angkanya menjadi Rp 0 dan panel menampilkan peringatan.
-
-Persentase RPC dapat digeser 20–60% karena berbeda tiap bank. Hasilnya hanya gambaran
-awal — keputusan akhir masih dipengaruhi BI Checking, masa kerja, dan penilaian agunan.
-Kalimat penyangkalan ini sudah ditampilkan di bawah kalkulator.
+dengan `P` pokok pinjaman, `i` bunga bulanan, dan `n` jumlah bulan (kasus bunga 0%
+ditangani terpisah). Hasilnya hanya gambaran — angka final ditentukan bank penerbit,
+termasuk biaya provisi, asuransi, dan appraisal. Kalimat penyangkalan ini sudah
+ditampilkan di bawah kalkulator.
