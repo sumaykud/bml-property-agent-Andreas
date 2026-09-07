@@ -5,7 +5,7 @@ import MortgageCalculator from '../components/MortgageCalculator'
 import PropertyCard from '../components/PropertyCard'
 import PropertyImage from '../components/PropertyImage'
 import Reveal from '../components/Reveal'
-import { propertyBySlug, similarTo } from '../data/properties'
+import { propertyBySlug, similarTo, unitType } from '../data/properties'
 import { formatIDR } from '../lib/format'
 import { site, waLink } from '../lib/site'
 
@@ -25,13 +25,19 @@ export default function PropertyDetail() {
 
   if (!property) return <Navigate to="/404" replace />
 
+  const tipe = unitType(property)
+
+  // Nilai 0 berarti datanya belum diterima, bukan benar-benar nol.
   const specs = [
+    { label: 'Tipe', value: tipe ?? '—' },
     { label: 'Luas tanah', value: property.landArea ? `${property.landArea} m²` : '—' },
-    { label: 'Luas bangunan', value: `${property.buildingArea} m²` },
+    {
+      label: 'Luas bangunan',
+      value: property.buildingArea ? `${property.buildingArea} m²` : '—',
+    },
     { label: 'Sertifikat', value: property.certificate },
-    { label: 'Tahun dibangun', value: String(property.yearBuilt) },
+    { label: 'Tahun dibangun', value: property.yearBuilt ? String(property.yearBuilt) : '—' },
     { label: 'Listrik', value: property.electricity },
-    { label: 'Carport', value: `${property.carport} mobil` },
   ]
 
   const similar = similarTo(property)
@@ -87,14 +93,22 @@ export default function PropertyDetail() {
             <Reveal>
               <div className="badges">
                 <span className="badge badge--accent">{property.status}</span>
-                <span className="badge">{property.type}</span>
+                <span className="badge">{property.category}</span>
               </div>
 
               <h1>{property.title}</h1>
-              <p className="detail__price">{formatIDR(property.price)}</p>
+              <p className="detail__price">
+                {property.price > 0 ? formatIDR(property.price) : 'Harga menyusul'}
+              </p>
               <p className="detail__quick">
-                {property.area} · {property.buildingArea} m² · {property.bedrooms} kamar ·{' '}
-                {property.bathrooms} kamar mandi
+                {[
+                  property.area,
+                  tipe && `Tipe ${tipe}`,
+                  property.bedrooms > 0 && `${property.bedrooms} kamar`,
+                  property.bathrooms > 0 && `${property.bathrooms} kamar mandi`,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
               </p>
             </Reveal>
 
@@ -117,24 +131,28 @@ export default function PropertyDetail() {
               ))}
             </Reveal>
 
-            <Reveal className="block" delay={60}>
-              <h2>Lokasi</h2>
-              <p style={{ marginBottom: 16 }}>
-                Jarak tempuh berkendara dari {property.area} ke fasilitas terdekat:
-              </p>
-              <ul className="nearby">
-                {property.nearby.map((n) => (
-                  <li key={n.label}>
-                    <span>{n.label}</span>
-                    <b>{n.distance}</b>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
+            {/* Blok ini hanya tampil bila data jaraknya sudah diisi. */}
+            {property.nearby.length > 0 && (
+              <Reveal className="block" delay={60}>
+                <h2>Lokasi</h2>
+                <p style={{ marginBottom: 16 }}>
+                  Jarak tempuh berkendara dari {property.area} ke fasilitas terdekat:
+                </p>
+                <ul className="nearby">
+                  {property.nearby.map((n) => (
+                    <li key={n.label}>
+                      <span>{n.label}</span>
+                      <b>{n.distance}</b>
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            )}
           </div>
 
           <aside className="aside">
-            <MortgageCalculator property={property} />
+            {/* Tanpa harga, simulasinya hanya akan menampilkan Rp 0. */}
+            {property.price > 0 && <MortgageCalculator property={property} />}
 
             <div className="panel">
               <div className="agent">

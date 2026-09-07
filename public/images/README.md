@@ -47,16 +47,43 @@ public/images/properties/<slug-properti>/
 `<slug-properti>` sama persis dengan nilai `slug` di
 [`src/data/properties.ts`](../../src/data/properties.ts).
 
-Folder yang tersedia sekarang:
+Folder yang tersedia sekarang — **masing-masing 6 foto** (`01.jpg` … `06.jpg`):
 
-| Slug | Jumlah foto |
+**Griya Sea Lestari 5**
+
+| Cluster | Folder |
 | --- | --- |
-| `maple-street-hillcrest` | 9 |
-| `griya-winangun-residence` | 7 |
-| `apartemen-bahu-tower-b` | 8 |
-| `kawanua-hill-cluster` | 6 |
-| `malalayang-sea-view` | 12 |
-| `apartemen-boulevard-studio` | 6 |
+| Beverly Hills 2 | `beverly-hills-2` |
+| Sea Forest | `sea-forest` |
+| The Forest | `the-forest` |
+| Snowy Owl | `snowy-owl` |
+| Redwing 23 (KLT) | `redwing-23` |
+| The Peak | `the-peak` |
+
+**Griya Mapanget Lestari**
+
+| Cluster | Folder |
+| --- | --- |
+| Stream Valley | `stream-valley` |
+| Green Valley | `green-valley` |
+| Heart Forest | `heart-forest` |
+
+**The Pasific Bay**
+
+| Cluster | Folder |
+| --- | --- |
+| Beach Front | `beach-front` |
+| Coastal Bay | `coastal-bay` |
+| Coastal Hill | `coastal-hill` |
+| Oceanic | `oceanic` |
+
+**Pre-owned**
+
+| Cluster | Folder |
+| --- | --- |
+| Ruko Sea | `ruko-sea` |
+| Royale Terrace | `royale-terrace` |
+| Diamond Hill | `diamond-hill` |
 
 Penomoran **harus** dua digit berurutan mulai `01` (`01`, `02`, … `10`, `11`).
 `1.jpg` atau `foto-1.jpg` tidak akan terbaca.

@@ -1,21 +1,26 @@
 import { useMemo, useState } from 'react'
-import { properties, type PropertyType } from '../data/properties'
+import { properties } from '../data/properties'
 import PropertyCard from './PropertyCard'
 import Reveal from './Reveal'
 
-type Filter = 'semua' | PropertyType
+const SEMUA = 'Semua'
 
-const FILTERS: { value: Filter; label: string }[] = [
-  { value: 'semua', label: 'Semua' },
-  { value: 'rumah', label: 'Rumah' },
-  { value: 'apartemen', label: 'Apartemen' },
-]
+/**
+ * Tombol saring dibuat dari data, bukan didaftar manual di sini.
+ *
+ * Menambah tab = memberi nilai `category` baru pada sebuah unit di
+ * src/data/properties.ts. Tidak ada yang perlu diubah di berkas ini.
+ * Set menjaga tiap kategori muncul sekali saja, sehingga tidak mungkin
+ * ada dua tombol kembar yang menyala bersamaan.
+ */
+const FILTERS = [SEMUA, ...new Set(properties.map((p) => p.category))]
 
 export default function Listings() {
-  const [filter, setFilter] = useState<Filter>('semua')
+  const [filter, setFilter] = useState<string>(SEMUA)
 
   const visible = useMemo(
-    () => (filter === 'semua' ? properties : properties.filter((p) => p.type === filter)),
+    () =>
+      filter === SEMUA ? properties : properties.filter((p) => p.category === filter),
     [filter],
   )
 
@@ -24,23 +29,23 @@ export default function Listings() {
       <div className="wrap">
         <div className="section__head">
           <Reveal>
-            <h2 className="section__title">Listing</h2>
+            <h2 className="section__title">Properti Pilihan</h2>
             <p className="section__sub">
-              Setiap unit sudah melalui pengecekan sertifikat, IMB/PBG, dan kunjungan
-              lapangan sebelum ditayangkan di sini.
+              Pilihan lengkap properti siap huni dan pesan bangun di Manado. Legalitas lahan,
+              sertifikat, dan IMB/PBG terjamin aman.
             </p>
           </Reveal>
 
           <Reveal className="filters" delay={80}>
-            {FILTERS.map((f) => (
+            {FILTERS.map((label) => (
               <button
-                key={f.value}
+                key={label}
                 type="button"
                 className="chip"
-                aria-pressed={filter === f.value}
-                onClick={() => setFilter(f.value)}
+                aria-pressed={filter === label}
+                onClick={() => setFilter(label)}
               >
-                {f.label}
+                {label}
               </button>
             ))}
           </Reveal>
